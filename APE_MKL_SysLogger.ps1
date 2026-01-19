@@ -32,8 +32,8 @@
 	Résultat : par exemple un fichier, une modification, un message d'erreur
 	
 .EXAMPLE
-	.\CanevasV3.ps1
-	Résultat : Sans paramètre, affichage de l'aide
+	.\APE_MKL_SysLogger.ps1
+	Résultat : Sans paramètreeS, affichage de l'aide
 #>
 
 <# Le nombre de paramètres doit correspondre à ceux définis dans l'en-tête
