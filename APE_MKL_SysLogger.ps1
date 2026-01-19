@@ -24,7 +24,7 @@
     Nom de la machine sur laquelle le script est exécuté
  	
 .OUTPUTS
-	Fichier .log avec les informations journalisées de la machine sur laquelle le script a été exécuté
+	Fichier .log avec les informations journalisées de la machine sur laquelle le script a été exécuté5
 	
 .EXAMPLE
 	.\CanevasV3.ps1 -FilePath Toto -EngineName Titi -Param3 Tutu
@@ -33,7 +33,7 @@
 	
 .EXAMPLE
 	.\APE_MKL_SysLogger.ps1
-	Résultat : Sans paramètreeS, affichage de l'aide
+	Résultat : Sans paramètre, affichage de l'aide
 #>
 
 <# Le nombre de paramètres doit correspondre à ceux définis dans l'en-tête
