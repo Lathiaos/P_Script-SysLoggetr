@@ -24,7 +24,7 @@
     Nom de la machine sur laquelle le script est exécuté
  	
 .OUTPUTS
-	Fichier .log avec les informations journalisées de la machine sur laquelle le script a été exécuté5
+	Fichier .log avec les informations journalisées de la machine sur laquelle le script a été exécuté
 	
 .EXAMPLE
 	.\CanevasV3.ps1 -FilePath Toto -EngineName Titi -Param3 Tutu
@@ -76,5 +76,5 @@ catch {
     <#Do this if a terminating exception happens#>
 }
 
-
+Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}}
 
