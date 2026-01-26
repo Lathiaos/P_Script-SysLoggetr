@@ -75,6 +75,4 @@ try {
 catch {
     <#Do this if a terminating exception happens#>
 }
-
-Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}}
-
+###################################################################################################################
