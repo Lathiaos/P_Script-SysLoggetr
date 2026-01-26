@@ -65,5 +65,5 @@ if(!$FilePath)
 Write-Host "coucou"
     
 
-
+Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}}
 
