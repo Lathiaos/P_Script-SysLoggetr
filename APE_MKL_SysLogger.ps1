@@ -62,17 +62,27 @@ if(!$FilePath)
 # Corps du script
 
 # Ce que fait le script, ici, afficher un message
+if (-Not (Test-Path -Path $FilePath)){
+    Write-Host "Le chemin specifie n'existe pas."
+    exit
+}
 Write-Host "coucou"
 try {
-    (Get-CimInstance Win32_ComputerSystem).Name,
-    (Get-CimInstance Win32_OperatingSystem).Version,
-    (Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID, @{Name="Taille";Expression={[math]::round($_.Size / 1GB)}},  @{Name="EspaceLibre";Expression={[math]::round($_.FreeSpace / 1GB)}}),
-    (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="RAM_Totale";Expression={[math]::round($_.TotalVisibleMemorySize / 1MB)}}, @{Name="RAM_Libre";Expression={[math]::round($_.FreePhysicalMemory / 1MB)}}),
-    (Get-CimInstance Win32_InstalledWin32Program).Name,
-    (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}})
 
+    try {
+        (Get-CimInstance Win32_ComputerSystem).Name,
+        (Get-CimInstance Win32_OperatingSystem).Version,
+        (Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID, @{Name="Taille";Expression={[math]::round($_.Size / 1GB)}},  @{Name="EspaceLibre";Expression={[math]::round($_.FreeSpace / 1GB)}}),
+        (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="RAM_Totale";Expression={[math]::round($_.TotalVisibleMemorySize / 1MB)}}, @{Name="RAM_Libre";Expression={[math]::round($_.FreePhysicalMemory / 1MB)}}),
+        (Get-CimInstance Win32_InstalledWin32Program).Name,
+        (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}})
+
+    }
+    catch {
+        <#si les commandes informations sys crash#>
+    }
 }
 catch {
-    <#Do this if a terminating exception happens#>
+    <#si cimsession crash#>
 }
 ###################################################################################################################
