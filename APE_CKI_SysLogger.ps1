@@ -44,10 +44,11 @@
 #>
 # La définition des paramètres se trouve juste après l'en-tête et un commentaire sur le.s paramètre.s est obligatoire 
 param($FilePath, $EngineName)
+param($IpDistant)
 
 ###################################################################################################################
 # Zone de définition des variables et fonctions, avec exemples
-$date = Get-Date -Format "le yyyy-MM-dd a HH-mm-ss"
+$date = Get-Date -Format "LE yyyy-MM-dd A HH-mm-ss"
 ###################################################################################################################
 # Zone de tests comme les paramètres renseignés ou les droits administrateurs
 
@@ -56,6 +57,10 @@ if(!$FilePath)
 {
     Get-Help $MyInvocation.Mycommand.Path
 	exit
+}
+if($IpDistant)
+{
+    $IpDistant=10.0.0.2
 }
 
 ###################################################################################################################
