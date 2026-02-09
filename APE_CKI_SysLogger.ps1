@@ -1,14 +1,14 @@
 <#
 .NOTES
-    *****************************************************************************
+	*****************************************************************************
     ETML
-    Nom du script :	Arnaud Pré et Mateen Khalil - Script PS - Projet 122
-    Auteurs       : Arnaud Pré et Mateen Khalil
+    Nom du script :	APE_CKI_SysLogger.ps1
+    Auteurs       :	Arnaud Pré et Carl Kali
     Date          :	19.01.2026
  	*****************************************************************************
     Modifications
  	Date    : 19.01.2026
- 	Auteurs : Arnaud Pré et Mateen Khalil
+ 	Auteurs : Arnaud Pré et Carl Kali
  	Raisons : Modifications demandées par le cadre du projet
  	*****************************************************************************
 .SYNOPSIS
@@ -32,7 +32,7 @@
 	Résultat : par exemple un fichier, une modification, un message d'erreur
 	
 .EXAMPLE
-	.\APE_MKL_SysLogger.ps1
+	.\APE_CKI_SysLogger.ps1
 	Résultat : Sans paramètre, affichage de l'aide
 #>
 
@@ -47,7 +47,7 @@ param($FilePath, $EngineName)
 
 ###################################################################################################################
 # Zone de définition des variables et fonctions, avec exemples
-$date = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$date = Get-Date -Format "le yyyy-MM-dd a HH-mm-ss"
 ###################################################################################################################
 # Zone de tests comme les paramètres renseignés ou les droits administrateurs
 
@@ -73,12 +73,14 @@ $logFile = Join-Path -Path $FilePath -ChildPath "sysloginfo.log"
 #$cimSession = New-CimSession -ComputerName $EngineName -ErrorAction Stop
 
 try {
-    Write-Output "$date $((Get-CimInstance Win32_ComputerSystem).Name)/$((Get-CimInstance Win32_OperatingSystem).Version) 
-    - Infos systeme: Build $((Get-CimInstance Win32_OperatingSystem).BuildNumber)
-    - Utilisation de l'espace disque $(Get-CimInstance Win32_LogicalDisk | Where-Object {$_.DeviceID -like "*C*"} | ForEach-Object { "$($_.DeviceID) $([math]::round($_.FreeSpace / 1GB, 1)) GB / $([math]::round($_.Size / 1GB, 1)) GB" })
-    - RAM: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { "$([math]::round($_.FreePhysicalMemory / 1MB, 2)) / $([math]::round($_.TotalVisibleMemorySize / 1MB, 2)) GB" })
-    - Programmes installes: $((Get-CimInstance Win32_InstalledWin32Program | ForEach-Object { $_.Name  }) -join ", ")
-    - Uptime: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { ((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss") })" >> $logFile
+Write-Output "$date
+"`t"- Nom de l'ordinateur		: $((Get-CimInstance Win32_ComputerSystem).Name)
+"`t"- Version			: $((Get-CimInstance Win32_OperatingSystem).Version)
+"`t"- Infos systeme			: Build $((Get-CimInstance Win32_OperatingSystem).BuildNumber)
+"`t"- Utilisation de l'espace disque: $((Get-CimInstance Win32_LogicalDisk | ForEach-Object { "$($_.DeviceID) $([math]::round($_.FreeSpace / 1GB, 1)) GB / $([math]::round($_.Size / 1GB, 1)) GB" }) -join "`n `t `t `t `t `t  ")
+"`t"- RAM				: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { "$([math]::round($_.FreePhysicalMemory / 1MB, 2)) / $([math]::round($_.TotalVisibleMemorySize / 1MB, 2)) GB" })
+"`t"- Programmes installes		: $((Get-CimInstance Win32_InstalledWin32Program | ForEach-Object { $_.Name  }) -join "`n `t `t `t `t `t  ")
+"`t"- Uptime			: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { ((Get-Date) - $_.LastBootUpTime).ToString("dd\:hh\:mm\:ss") })" > $logFile
 }
 catch {
     Write-Host "Erreur lors de la récupération des informations système : $($_.Exception.Message)"
