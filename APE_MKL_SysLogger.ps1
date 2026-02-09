@@ -62,16 +62,25 @@ if(!$FilePath)
 # Corps du script
 
 # Ce que fait le script, ici, afficher un message
-Write-Host "coucou"
+if (-Not (Test-Path -Path $FilePath)){
+    Write-Host "Le chemin specifie n'existe pas."
+    exit
+}
+
+#Crée le fichier de log 
+$logFile = Join-Path -Path $FilePath -ChildPath "sysloginfo.log"
+
+#$cimSession = New-CimSession -ComputerName $EngineName -ErrorAction Stop
+
 try {
-    (Get-CimInstance Win32_ComputerSystem).Name,
-    (Get-CimInstance Win32_OperatingSystem).Version,
-    (Get-CimInstance Win32_LogicalDisk | Select-Object DeviceID, @{Name="TotalSize";Expression={[math]::round($_.Size / 1GB)}},  @{Name="FreeSpace";Expression={[math]::round($_.FreeSpace / 1GB)}}),
-    (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="TotalRAMSize";Expression={[math]::round($_.TotalVisibleMemorySize / 1MB)}}, @{Name="FreeRAMSpace";Expression={[math]::round($_.FreePhysicalMemory / 1MB)}}),
-    (Get-CimInstance Win32_InstalledWin32Program).Name,
-    (Get-CimInstance Win32_OperatingSystem | Select-Object @{Name="Uptime";Expression={((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss")}})
+    Write-Output "$date $((Get-CimInstance Win32_ComputerSystem).Name)/$((Get-CimInstance Win32_OperatingSystem).Version) 
+    - Infos systeme: Build $((Get-CimInstance Win32_OperatingSystem).BuildNumber)
+    - Utilisation de l'espace disque $(Get-CimInstance Win32_LogicalDisk | Where-Object {$_.DeviceID -like "*C*"} | ForEach-Object { "$($_.DeviceID) $([math]::round($_.FreeSpace / 1GB, 1)) GB / $([math]::round($_.Size / 1GB, 1)) GB" })
+    - RAM: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { "$([math]::round($_.FreePhysicalMemory / 1MB, 2)) / $([math]::round($_.TotalVisibleMemorySize / 1MB, 2)) GB" })
+    - Programmes installes: $((Get-CimInstance Win32_InstalledWin32Program | ForEach-Object { $_.Name  }) -join ", ")
+    - Uptime: $(Get-CimInstance Win32_OperatingSystem | ForEach-Object { ((Get-Date) - $_.LastBootUpTime).ToString("hh\:mm\:ss") })" >> $logFile
 }
 catch {
-    <#Do this if a terminating exception happens#>
+    Write-Host "Erreur lors de la récupération des informations système : $($_.Exception.Message)"
 }
 ###################################################################################################################
